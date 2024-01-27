@@ -1,0 +1,70 @@
+on:
+  push:
+    branches:
+      - develop
+    tags:
+      - '*'
+
+env:
+  SERVICE_NAME: service
+
+jobs:
+  build:
+    runs-on: self-hosted
+    outputs:
+      IMAGE: ${{ steps.build-image.outputs.IMAGE }}
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
+      - uses: actions/checkout@v3
+      - run: |
+          docker build . -t $ECR_REGISTRY/$IMAGE -f docker/Dockerfile
+          docker push $ECR_REGISTRY/$IMAGE
+          echo "IMAGE=$IMAGE" >> $GITHUB_OUTPUT
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE: ${{ env.SERVICE_NAME }}:${{ github.run_id }}
+      - run: docker system prune -af
+        if: always()
+
+  deploy-staging:
+    runs-on: self-hosted
+    needs: build
+    if: github.ref_type == 'branch' && github.ref_name == 'develop'
+    environment: staging
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
+      - uses: actions/checkout@v3
+      - run: docker stack deploy ${{ env.SERVICE_NAME }} -c docker-stack.yml --with-registry-auth --prune
+        env:
+          IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ needs.build.outputs.IMAGE }}
+
+  deploy-production:
+    runs-on: self-hosted
+    needs: build
+    if: github.ref_type == 'tag'
+    environment: production
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
+      - uses: actions/checkout@v3
+      - run: docker stack deploy ${{ env.SERVICE_NAME }} -c docker-stack.yml --with-registry-auth --prune
+        env:
+          IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ needs.build.outputs.IMAGE }}
