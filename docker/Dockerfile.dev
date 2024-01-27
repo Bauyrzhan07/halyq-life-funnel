@@ -1,4 +1,4 @@
-FROM python:3.11-slim-buster
+FROM python:3.10.13-slim
 
 RUN useradd --create-home --home-dir /app --shell /bin/bash app
 WORKDIR /app
