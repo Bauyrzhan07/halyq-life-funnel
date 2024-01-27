@@ -1,13 +1,60 @@
 {% extends 'layout.html' %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 10px;
+    }
+    .container {
+        width: 90%;
+        margin: 0 auto;
+    }
+    .chart {
+        background-color: white;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+</style>
 {% block page_body %}
     <div class="row">
-        <div class="col-8">
+        <div class="col-6">
             <div class="card">
                 <div class="card-body">
-                    <div class="card-title">
-                        Stargazers over time
+                    <div class="chart">
+                        <img src="data:image/png;base64,{{ income_level_chart }}" alt="Income Level Distribution" style="max-width:100%;">
                     </div>
-                    <img src="https://starchart.cc/fastapi-admin/fastapi-admin.svg" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chart">
+                        <img src="data:image/png;base64,{{ health_status_chart }}" alt="Health Status Distribution" style="max-width:100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chart">
+                        <img src="data:image/png;base64,{{ work_style_chart }}" alt="Work Style Distribution" style="max-width:100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chart">
+                        <img src="data:image/png;base64,{{ debt_level_chart }}" alt="Debt Level Distribution" style="max-width:100%;">
+                    </div>
                 </div>
             </div>
         </div>

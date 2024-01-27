@@ -7,3 +7,4 @@ aerich==0.7.*
 redis==5.0.*
 loguru
 fastapi-admin
+matplotlib
