@@ -7,10 +7,6 @@
         margin: 0;
         padding: 10px;
     }
-    .container {
-        width: 90%;
-        margin: 0 auto;
-    }
     .chart {
         background-color: white;
         padding: 15px;
@@ -24,7 +20,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="chart">
-                        <img src="data:image/png;base64,{{ income_level_chart }}" alt="Income Level Distribution" style="max-width:100%;">
+                       {{ income_level_pie_chart | safe }}
                     </div>
                 </div>
             </div>
@@ -33,7 +29,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="chart">
-                        <img src="data:image/png;base64,{{ health_status_chart }}" alt="Health Status Distribution" style="max-width:100%;">
+                       {{ debt_level_pie_chart | safe }}
                     </div>
                 </div>
             </div>
@@ -44,7 +40,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="chart">
-                        <img src="data:image/png;base64,{{ work_style_chart }}" alt="Work Style Distribution" style="max-width:100%;">
+                        {{ health_status_pie_chart | safe }}
                     </div>
                 </div>
             </div>
@@ -53,7 +49,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="chart">
-                        <img src="data:image/png;base64,{{ debt_level_chart }}" alt="Debt Level Distribution" style="max-width:100%;">
+                        {{ work_style_pie_chart | safe }}
                     </div>
                 </div>
             </div>
