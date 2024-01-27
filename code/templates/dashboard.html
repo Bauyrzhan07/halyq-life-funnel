@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 10px;
+    }
+    .chart {
+        background-color: white;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+</style>
+{% block page_body %}
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chart">
+                       {{ income_level_pie_chart | safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chart">
+                       {{ debt_level_pie_chart | safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chart">
+                        {{ health_status_pie_chart | safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chart">
+                        {{ work_style_pie_chart | safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

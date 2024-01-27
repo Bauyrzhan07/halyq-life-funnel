@@ -9,19 +9,24 @@ services:
       DEBUG: True
       RELOAD: True
       DATABASE_URL: postgres://postgres:postgres@db/postgres
+      REDIS_URL: redis://redis:6379/0
     volumes:
       - .:/app
     tty: true
     ports:
       - "8000:8000"
-    depends_on: [db]
-    command: python -m code.app
+    depends_on: [db, redis]
+    command: sh -c "aerich upgrade && python -m code.app"
   db:
-    image: postgres:12.3-alpine
+    image: postgres:16.1-alpine3.19
     environment:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
+  redis:
+    image: redis:7.2.4-alpine3.19
+    ports:
+      - "6379:6379"
 
 networks:
   default:
