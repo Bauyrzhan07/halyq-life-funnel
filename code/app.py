@@ -1,12 +1,11 @@
-import os
 import asyncio
+import os
 from contextlib import asynccontextmanager
 
 import uvicorn
-from redis import asyncio as aioredis
 from fastapi import FastAPI, status
-from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi_admin.app import app as admin_app
 from fastapi_admin.exceptions import (
     forbidden_error_exception,
@@ -14,6 +13,7 @@ from fastapi_admin.exceptions import (
     server_error_exception,
     unauthorized_error_exception,
 )
+from redis import asyncio as aioredis
 from tortoise import Tortoise
 
 from code.api import setup_routers
@@ -21,6 +21,7 @@ from code.config import settings, TORTOISE_CONFIG
 from code.constants import BASE_DIR
 from code.models import Admin
 from code.providers import LoginProvider
+from code.utils import setup_logger
 
 
 @asynccontextmanager
@@ -37,9 +38,9 @@ async def lifespan(app: FastAPI):
                 template_folders=[os.path.join(BASE_DIR, "templates")],
                 providers=[
                     LoginProvider(
-                        login_logo_url='https://preview.tabler.io/static/logo.svg',
+                        login_logo_url="https://preview.tabler.io/static/logo.svg",
                         admin_model=Admin,
-                    )
+                    ),
                 ],
                 redis=redis,
             ),
@@ -56,16 +57,25 @@ app = FastAPI(
     openapi_url="/openapi.json/",
 )
 
+
 @app.get("/")
 async def index():
     return RedirectResponse(url="/admin")
 
-admin_app.add_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, server_error_exception)
+
+admin_app.add_exception_handler(
+    status.HTTP_500_INTERNAL_SERVER_ERROR,
+    server_error_exception,
+)
 admin_app.add_exception_handler(status.HTTP_404_NOT_FOUND, not_found_error_exception)
 admin_app.add_exception_handler(status.HTTP_403_FORBIDDEN, forbidden_error_exception)
-admin_app.add_exception_handler(status.HTTP_401_UNAUTHORIZED, unauthorized_error_exception)
+admin_app.add_exception_handler(
+    status.HTTP_401_UNAUTHORIZED,
+    unauthorized_error_exception,
+)
 
 setup_routers(app)
+setup_logger(settings.debug)
 
 app.mount("/admin", admin_app)
 

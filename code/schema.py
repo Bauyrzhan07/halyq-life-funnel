@@ -43,8 +43,8 @@ class AttributionProperties(BaseModel):
         OTHER = "OTHER"
 
     income_level: LevelEnum | None = None
-    is_married: bool = False
-    number_of_dependants: int = 0
+    is_married: bool | None = None
+    number_of_dependants: int | None = None
     health_status: HealthStatusEnum | None = None
     financial_goals: list[FinancialGoalEnum] = []
     debt_level: LevelEnum | None = None

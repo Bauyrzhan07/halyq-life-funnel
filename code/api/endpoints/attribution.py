@@ -25,7 +25,7 @@ async def init_handler(
         **data.model_dump(exclude={"attribution_id"}),
     }
     attribution = await Attribution.create(**init_data)
-    logger.info(f"Created attribution {attribution.id}", attribution=attribution)
+    logger.info(f"Created attribution {attribution.id}")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
@@ -43,20 +43,20 @@ async def update_properties_handler(
             id=data.attribution_id,
         )
     except DoesNotExist:
-        logger.error(f"Attribution {data.attribution_id} not found", data=data)
+        logger.error(f"Attribution {data.attribution_id} not found, data: {data}")
         return Response(
             content={"detail": "Attribution not found"},
             status_code=status.HTTP_404_NOT_FOUND,
         )
 
-    attribution.properties = {**attribution.properties, **data.properties.model_dump()}
+    properties_to_update = data.properties.model_dump(exclude_none=True)
+
+    attribution.properties = {**attribution.properties, **properties_to_update}
     attribution.updated_at = datetime.now(tz=timezone.utc)
     await attribution.save()
 
     logger.info(
-        f"Updated attribution {attribution.id}",
-        attribution=attribution,
-        properties=data.properties,
+        f"Updated attribution {attribution.id} with properties {properties_to_update}",
     )
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
