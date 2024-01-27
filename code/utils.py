@@ -1,11 +1,6 @@
 import sys
-from enum import Enum
 
 from loguru import logger
-
-
-class StrEnum(str, Enum):
-    pass
 
 
 def setup_logger(debug: bool) -> None:
