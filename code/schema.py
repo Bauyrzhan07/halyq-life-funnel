@@ -1,9 +1,9 @@
-from enum import StrEnum
 from uuid import UUID
 
 from pydantic import BaseModel
 
 from code.models import Attribution
+from code.utils import StrEnum
 
 
 class AttributionInit(BaseModel):

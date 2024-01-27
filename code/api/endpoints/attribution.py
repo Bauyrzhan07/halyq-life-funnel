@@ -45,11 +45,11 @@ async def update_properties_handler(
     except DoesNotExist:
         logger.error(f"Attribution {data.attribution_id} not found", data=data)
         return Response(
+            content={"detail": "Attribution not found"},
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Attribution not found",
         )
 
-    attribution.properties = {**attribution.properties, **data.properties}
+    attribution.properties = {**attribution.properties, **data.properties.model_dump()}
     attribution.updated_at = datetime.now(tz=timezone.utc)
     await attribution.save()
 
