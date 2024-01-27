@@ -18,7 +18,7 @@ class AttributionProperties(BaseModel):
         GOOD = "GOOD"
         EXCELLENT = "EXCELLENT"
 
-    class LevelEnum(StrEnum):
+    class IncomeLevelEnum(StrEnum):
         LOW = "LOW"
         MEDIUM = "MEDIUM"
         HIGH = "HIGH"
@@ -29,12 +29,6 @@ class AttributionProperties(BaseModel):
         MORTGAGE_PROTECTION = "MORTGAGE_PROTECTION"
         INCOME_REPLACEMENT = "INCOME_REPLACEMENT"
 
-    class LastInjuramceTimeEnum(StrEnum):
-        THIS_MONTH = "THIS_MONTH"
-        LAST_MONTH = "LAST_MONTH"
-        THIS_YEAR = "THIS_YEAR"
-        MORE_THAN_YEAR = "MORE_THAN_YEAR"
-
     class AssetEnum(StrEnum):
         INVESTMENT = "INVESTMENT"
         SAVINGS = "SAVINGS"
@@ -42,13 +36,24 @@ class AttributionProperties(BaseModel):
         BUSINESS = "BUSINESS"
         OTHER = "OTHER"
 
-    income_level: LevelEnum | None = None
-    is_married: bool | None = None
+    class DebtLevelEnum(StrEnum):
+        LOW = "LOW"
+        MEDIUM = "MEDIUM"
+        HIGH = "HIGH"
+        NO = "NO"
+
+    class WorkStyleEnum(StrEnum):
+        PHYSICAL = "PHYSICAL"
+        OFFICE = "OFFICE"
+        REMOTE = "REMOTE"
+        OTHER = "OTHER"
+
+    income_level: IncomeLevelEnum | None = None
     number_of_dependants: int | None = None
     health_status: HealthStatusEnum | None = None
+    debt_level: DebtLevelEnum | None = None
+    work_style: WorkStyleEnum | None = None
     financial_goals: list[FinancialGoalEnum] = []
-    debt_level: LevelEnum | None = None
-    last_injurance_time: LastInjuramceTimeEnum | None = None
     assets: list[AssetEnum] = []
 
 
