@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from fastapi import Depends
 from fastapi.requests import Request
 from fastapi_admin.app import app
@@ -15,40 +13,23 @@ from code.visualization.pie_charts import plot_attribution_by_value_distribution
 async def home(
     request: Request,
     resources=Depends(get_resources),
-    created_at__gte: datetime = None,
 ):
-    income_level_data = await AttributionSelector(
-        attribution_property="income_level",
-        enum_class=types.IncomeLevelEnum,
-    ).get_user_distribution_by_property()
-    health_status_data = await AttributionSelector(
-        attribution_property="health_status",
-        enum_class=types.HealthStatusEnum,
-    ).get_user_distribution_by_property()
-    work_style_data = await AttributionSelector(
-        attribution_property="work_style",
-        enum_class=types.WorkStyleEnum,
-    ).get_user_distribution_by_property()
-    debt_level_data = await AttributionSelector(
-        attribution_property="debt_level",
-        enum_class=types.DebtLevelEnum,
-    ).get_user_distribution_by_property()
-    income_level_pie_chart = plot_attribution_by_value_distribution(
-        data=income_level_data,
-        title="User Distribution by Income Level",
+    properties = (
+        ("income_level", types.IncomeLevelEnum, "User Distribution by Income Level"),
+        ("health_status", types.HealthStatusEnum, "User Distribution by Health Status"),
+        ("work_style", types.WorkStyleEnum, "User Distribution by Work Style"),
+        ("debt_level", types.DebtLevelEnum, "User Distribution by Debt Level"),
     )
-    health_status_pie_chart = plot_attribution_by_value_distribution(
-        data=health_status_data,
-        title="User Distribution by Health Status",
-    )
-    work_style_pie_chart = plot_attribution_by_value_distribution(
-        data=work_style_data,
-        title="User Distribution by Work Style",
-    )
-    debt_level_pie_chart = plot_attribution_by_value_distribution(
-        data=debt_level_data,
-        title="User Distribution by Debt Level",
-    )
+    pie_charts = {
+        f"{name}_pie_chart": plot_attribution_by_value_distribution(
+            data=await AttributionSelector(
+                attribution_property=name,
+                enum_class=enum_class,
+            ).get_user_distribution_by_property(),
+            title=title,
+        )
+        for name, enum_class, title in properties
+    }
 
     return templates.TemplateResponse(
         "dashboard.html",
@@ -58,9 +39,6 @@ async def home(
             "resource_label": "Dashboard",
             "page_pre_title": "overview",
             "page_title": "Dashboard",
-            "income_level_pie_chart": income_level_pie_chart,
-            "health_status_pie_chart": health_status_pie_chart,
-            "work_style_pie_chart": work_style_pie_chart,
-            "debt_level_pie_chart": debt_level_pie_chart,
+            **pie_charts,
         },
     )
