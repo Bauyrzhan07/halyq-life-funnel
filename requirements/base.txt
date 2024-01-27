@@ -1,3 +1,6 @@
-fastapi
-uvicorn
-httpx
+fastapi==0.103.*
+pydantic-settings==2.1.*
+uvicorn==0.23.*
+httpx==0.24.*
+tortoise-orm[asyncpg]==0.20.*
+aerich==0.7.*

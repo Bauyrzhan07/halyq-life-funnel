@@ -5,13 +5,24 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.dev
+    environment:
+      DEBUG: True
+      RELOAD: True
+      DATABASE_URL: postgres://postgres:postgres@db/postgres
     volumes:
       - .:/app
-    environment:
-      RELOAD: 'true'
     tty: true
+    ports:
+      - "8000:8000"
+    depends_on: [db]
     command: python -m code.app
+  db:
+    image: postgres:12.3-alpine
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
 
 networks:
   default:
-    name: ms_network
+    name: local_network
