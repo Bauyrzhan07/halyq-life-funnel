@@ -1,12 +1,13 @@
-import uvicorn
 from contextlib import asynccontextmanager
 
-from tortoise import Tortoise
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from tortoise import Tortoise
 
 from code.config import settings, TORTOISE_CONFIG
 from code.handlers import health
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -20,7 +21,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title='Halyq Life Funnel API',
     lifespan=lifespan,
-    openapi_url='/openapi.json/'
+    openapi_url='/openapi.json/',
 )
 
 app.add_middleware(
