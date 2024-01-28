@@ -6,19 +6,19 @@ from starlette.responses import JSONResponse
 from tortoise.exceptions import DoesNotExist
 
 from code.models import Attribution
-from code.schema import PaymentsRecommendationsResponse
-from code.services.calculation import RecommendedMonthlyPaymentCalculationService
+from code.schema import ProductRecommendationsResponse
+from code.services.recommendation import ProductRecommendationService
 
 
 router = APIRouter(prefix="/recommendations")
 
 
 @router.get(
-    "/",
-    response_model=PaymentsRecommendationsResponse,
+    "/products/",
+    response_model=ProductRecommendationsResponse,
     status_code=status.HTTP_200_OK,
 )
-async def get_recommendations_handler(
+async def get_recommended_products(
     request: Request,
     attribution_id: UUID,
 ):
@@ -32,14 +32,14 @@ async def get_recommendations_handler(
             content={"detail": "Error getting recommendations"},
             status_code=status.HTTP_404_NOT_FOUND,
         )
-
+    response = await ProductRecommendationService(
+        attribution=attribution,
+    ).process()
     return JSONResponse(
         content={
-            "recommended_payment_amount": RecommendedMonthlyPaymentCalculationService(
-                gender=attribution.gender,
-                age_group=attribution.age,
-                properties=attribution.properties,
-            ).calculate(),
+            "recommended_products": ProductRecommendationsResponse(
+                recommended_products=response,
+            ).model_dump(),
         },
         status_code=status.HTTP_200_OK,
     )

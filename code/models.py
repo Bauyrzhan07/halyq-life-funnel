@@ -33,6 +33,23 @@ AttributionDTO = pydantic_model_creator(
 )
 
 
+class Product(Common):
+    title = fields.CharField(max_length=200)
+    description = fields.TextField()
+    tags = fields.JSONField(default=dict)
+    link_to_product = fields.CharField(max_length=200)
+    min_premium_amount = fields.IntField(default=0)
+    max_premium_amount = fields.IntField(default=0)
+    max_insurance_coverage = fields.IntField(default=10_000_000)
+    duration_in_years = fields.IntField(default=1)
+
+
+ProductDTO = pydantic_model_creator(
+    Product,
+    model_config=ConfigDict(from_attributes=True),
+)
+
+
 class Admin(models.Model):
     id = fields.BigIntField(generated=True, pk=True)  # noqa: A003
 
