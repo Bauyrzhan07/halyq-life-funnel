@@ -71,6 +71,7 @@ class Content(Dropdown):
             "gender",
             "age",
             "properties",
+            "is_completed",
         ]
 
     class ProductResource(Model):

@@ -25,6 +25,10 @@ class Attribution(Common):
     gender = fields.CharEnumField(enum_type=Gender, null=True, default=None)
     age = fields.CharField(max_length=6, null=True, default=None)
     properties = fields.JSONField(default=dict)
+    is_completed = fields.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-created_at"]
 
 
 AttributionDTO = pydantic_model_creator(
