@@ -29,3 +29,19 @@ class AttributionUpdate(BaseModel):
 
 class PaymentsRecommendationsResponse(BaseModel):
     recommended_payment_amount: str
+
+
+class ProductBaseResponse(BaseModel):
+    title: str
+    description: str
+    link_to_product: str
+
+
+class ProductRecommendationsResponse(BaseModel):
+    class ProductWithRecommendation(BaseModel):
+        product: ProductBaseResponse
+        duration_in_years: int
+        premium: str
+        insurance_coverage: str
+
+    recommended_products: list[ProductWithRecommendation]
