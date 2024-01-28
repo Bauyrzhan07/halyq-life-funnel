@@ -38,10 +38,11 @@ async def lifespan(app: FastAPI):
                 template_folders=[os.path.join(BASE_DIR, "templates")],
                 providers=[
                     LoginProvider(
-                        login_logo_url="https://preview.tabler.io/static/logo.svg",
+                        login_logo_url=settings.login_logo_url,
                         admin_model=Admin,
                     ),
                 ],
+                favicon_url=settings.favicon_url,
                 redis=redis,
             ),
             Tortoise.init(config=TORTOISE_CONFIG),
