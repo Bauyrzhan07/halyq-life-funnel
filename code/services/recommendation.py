@@ -14,7 +14,7 @@ class ProductRecommendationService:
         products = await Product.all()
         logger.info(f"Got products: {products}")
         product_recommendation_coefficient = {
-            product.id: await self._calc_product_recommendation_coefficient(product)
+            product.id: self._calc_product_recommendation_coefficient(product)
             for product in products
         }
         max_product_recommendation_coefficient = max(
@@ -42,7 +42,7 @@ class ProductRecommendationService:
                 )
         return recommended_products
 
-    async def _calc_product_recommendation_coefficient(self, product: Product):
+    def _calc_product_recommendation_coefficient(self, product: Product):
         product_tags = product.tags
         coefficient = 0
         for _property, value in self.properties.items():

@@ -35,6 +35,10 @@ async def get_recommended_products(
     response = await ProductRecommendationService(
         attribution=attribution,
     ).process()
+
+    attribution.is_completed = True
+    await attribution.save(update_fields=["is_completed", "updated_at"])
+
     return JSONResponse(
         content={
             "recommended_products": ProductRecommendationsResponse(
